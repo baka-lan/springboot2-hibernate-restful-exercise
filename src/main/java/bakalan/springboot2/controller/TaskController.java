@@ -1,26 +1,23 @@
 package bakalan.springboot2.controller;
 
 import bakalan.springboot2.model.Task;
+import bakalan.springboot2.model.TaskRequest;
 import bakalan.springboot2.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("tasks")
+@RequestMapping(value = "tasks", produces = MediaType.APPLICATION_JSON_VALUE)
 public class TaskController {
 
     @Autowired
     TaskRepository taskRepository;
-
-    //get tasks
-    @GetMapping("")
-    public List<Task> getAllTasks() {
-        return this.taskRepository.findAll();
-    }
 
     @PostMapping("new")
     public Task createTask(@RequestParam long orderId) {
@@ -28,5 +25,13 @@ public class TaskController {
         return taskRepository.save(task);
     }
 
-    //get tasks by data interval and id
+    @GetMapping("get")
+    public List<Task> getTasks(@Valid @RequestBody TaskRequest taskRequest) {
+        if (taskRequest.getOrderId() != 0) {
+            return taskRepository.findTasksByDateBetweenAndOrderId(
+                    taskRequest.getStartDate(), taskRequest.getEndDate(), taskRequest.getOrderId());
+        } else {
+            return taskRepository.findTasksByDateBetween(taskRequest.getStartDate(), taskRequest.getEndDate());
+        }
+    }
 }
