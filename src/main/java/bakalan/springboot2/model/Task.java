@@ -9,7 +9,7 @@ import java.time.LocalTime;
 public class Task {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     long id;
 
     @Column(name = "order_id")
@@ -27,11 +27,11 @@ public class Task {
     public Task() {
     }
 
-    public Task(long orderId, LocalDate date, LocalTime time, boolean resolved) {
+    public Task(long orderId, LocalDate date, LocalTime time) {
         this.orderId = orderId;
         this.date = date;
         this.time = time;
-        this.resolved = resolved;
+        this.resolved = false;
     }
 
     public long getId() {
